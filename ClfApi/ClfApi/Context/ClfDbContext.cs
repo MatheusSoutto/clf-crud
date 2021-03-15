@@ -18,7 +18,7 @@ namespace ClfApi.Context
         {
         }
 
-        public virtual DbSet<Clf> Clves { get; set; }
+        public virtual DbSet<Clf> Clfs { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

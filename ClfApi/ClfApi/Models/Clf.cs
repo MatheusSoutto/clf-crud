@@ -7,6 +7,11 @@ namespace ClfApi.Models
 {
     public partial class Clf
     {
+        public Clf()
+        {
+            Id = Guid.NewGuid();
+        }
+
         public Guid Id { get; set; }
         public string IpAddress { get; set; }
         public string RfcIdentity { get; set; }
