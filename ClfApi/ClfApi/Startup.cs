@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ClfApi.Context;
+using ClfApi.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -30,6 +31,8 @@ namespace ClfApi
             services.AddControllers();
 
             services.AddDbContext<ClfDbContext>(options => options.UseNpgsql(Configuration.GetConnectionString("ClfDb")));
+
+            services.AddScoped<ClfService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

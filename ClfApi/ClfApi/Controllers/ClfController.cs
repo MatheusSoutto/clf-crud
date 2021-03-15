@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
 using ClfApi.Context;
 using ClfApi.Models;
+using ClfApi.Services;
 
 namespace ClfApi.Controllers
 {
@@ -15,25 +16,23 @@ namespace ClfApi.Controllers
     [ApiController]
     public class ClfController : ControllerBase
     {
-        private readonly ClfDbContext _context;
+        private readonly IClfService _clfService;
 
-        public ClfController(ClfDbContext context)
+        public ClfController(ClfService clfService)
         {
-            _context = context;
+            _clfService = clfService;
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Clf>>> GetClfs()
+        public ActionResult<IEnumerable<Clf>> GetClfs()
         {
-            return await _context.Clfs.Take(10).ToListAsync();
+            return _clfService.List().ToList();
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Clf>> GetClf(Guid id)
+        public ActionResult<Clf> GetClf(Guid id)
         {
-            var clf = await _context.Clfs
-                .Where(clf => clf.Id == id)
-                .FirstOrDefaultAsync();
+            Clf clf = _clfService.Find(id);
 
             if (clf == null)
             {
@@ -44,119 +43,85 @@ namespace ClfApi.Controllers
         }
 
         [HttpGet("by-ip-address/{ipAddress}")]
-        public async Task<ActionResult<IEnumerable<Clf>>> GetByIpAddress(string ipAddress)
+        public ActionResult<IEnumerable<Clf>> GetByIpAddress(string ipAddress)
         {
-            var clf = await _context.Clfs
-                .Where(clf => clf.IpAddress == ipAddress)
-                .ToListAsync();
+            List<Clf> clfs = _clfService.FindByIpAddress(ipAddress).ToList();
 
-            if (clf == null)
+            if (clfs == null)
             {
                 return NotFound();
             }
 
-            return clf;
+            return clfs;
         }
         [HttpGet("by-date-time/{dateTime}")]
-        public async Task<ActionResult<IEnumerable<Clf>>> GetByIpAddress(DateTime dateTime)
+        public ActionResult<IEnumerable<Clf>> GetByRequestDate(DateTime dateTime)
         {
-            var clf = await _context.Clfs
-                .Where(clf => clf.RequestDate == dateTime)
-                .ToListAsync();
+            List<Clf> clfs = _clfService.FindByRequestDate(dateTime).ToList();
 
-            if (clf == null)
+            if (clfs == null)
             {
                 return NotFound();
             }
 
-            return clf;
+            return clfs;
         }
 
         // When we do not use [FromQuery], it results in a 404 (Not Found) response, because the string userAgent contains "/", which confuses the router.
         [HttpGet("by-user-agent")]
-        public async Task<ActionResult<IEnumerable<Clf>>> GetByUserAgent([FromQuery] string userAgent)
+        public ActionResult<IEnumerable<Clf>> GetByUserAgent([FromQuery] string userAgent)
         {
-            var clf = await _context.Clfs
-                .Where(clf => clf.UserAgent == userAgent)
-                .ToListAsync();
+            List<Clf> clfs = _clfService.FindByUserAgent(userAgent).ToList();
 
-            if (clf == null)
+            if (clfs == null)
             {
                 return NotFound();
             }
 
-            return clf;
+            return clfs;
         }
 
         
         // PUT: api/Clfs/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
-        [HttpPut("UpdateClf/{id}")]
-        public async Task<IActionResult> PutClf(Guid id, Clf Clf)
+        [HttpPut("{id}")]
+        public IActionResult PutClf(Guid id, Clf clf)
         {
-            if (id != Clf.Id)
+            if (id != clf.Id)
             {
                 return BadRequest();
             }
 
-            _context.Entry(Clf).State = EntityState.Modified;
-
-            try
+            if (_clfService.UpdateClf(clf) == null)
             {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!ClfExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return NotFound();
             }
 
             return NoContent();
         }
 
         [HttpPost]
-        public async Task<ActionResult<Clf>> PostClf(Clf obj)
+        public ActionResult<Clf> PostClf(Clf clf)
         {
-            _context.Clfs.Add(obj);
-            _context.SaveChanges();
-
-            var Clf = await _context.Clfs
-                .Where(clf => clf.Id == clf.Id)
-                .FirstOrDefaultAsync();
-
-            if (Clf == null)
+            if (_clfService.CreateClf(clf) == null)
             {
-                return NotFound();
+                return BadRequest("Already exists!");
             }
 
-            return Clf;
+            return NoContent();
         }
         
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Clf>> DeleteClf(Guid id)
+        public ActionResult<Clf> DeleteClf(Guid id)
         {
-            var clf = await _context.Clfs.FindAsync(id);
+            Clf clf = _clfService.DeleteClf(id);
             if (clf == null)
             {
                 return NotFound();
             }
 
-            _context.Clfs.Remove(clf);
-            await _context.SaveChangesAsync();
-
             return clf;
-        }
-
-        private bool ClfExists(Guid id)
-        {
-            return _context.Clfs.Any(clf => clf.Id == id);
         }
     }
 }
