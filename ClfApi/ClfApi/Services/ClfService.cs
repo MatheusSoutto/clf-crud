@@ -97,6 +97,20 @@ namespace ClfApi.Services
             return clf;
         }
 
+        public void CreateMultipleClfs(IEnumerable<Clf> clfs)
+        {
+            try
+            {
+                _context.Clfs.AddRange(clfs);
+                _context.SaveChanges();
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+            return;
+        }
+
         public Clf DeleteClf(Guid id)
         {
             Clf clf;
@@ -133,6 +147,7 @@ namespace ClfApi.Services
         IEnumerable<Clf> FindByUserAgent(string userAgent);
         Clf UpdateClf(Clf clf);
         Clf CreateClf(Clf clf);
+        void CreateMultipleClfs(IEnumerable<Clf> clfs);
         Clf DeleteClf(Guid id);
         bool ClfExists(Guid id);
     }

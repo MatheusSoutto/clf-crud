@@ -112,28 +112,20 @@ namespace ClfApi.Controllers
         }
 
         [HttpPost("batch")]
-        public ActionResult<IEnumerable<Clf>> PostBatchClf([FromForm] FileUpload fileUpload)
+        public ActionResult PostBatchClf([FromForm] FileUpload fileUpload)
         {
             IEnumerable<Clf> result;
             if (fileUpload.File.Length > 0)
             {
                 result = _utilService.BatchToList(fileUpload.File.OpenReadStream());
-                /*
-                using (var reader = new StreamReader(fileUpload.file.OpenReadStream()))
-                {
-                    while (reader.Peek() >= 0)
-                    {
-                        result.Add(reader.ReadLine());
-                    }
-                }
-                */
+                _clfService.CreateMultipleClfs(result);
             }
             else
             {
                 return BadRequest("Empty file!");
             }
 
-            return result.ToList();
+            return NoContent();
         }
 
         [HttpDelete("{id}")]
