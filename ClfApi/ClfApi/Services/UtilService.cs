@@ -1,6 +1,7 @@
 ﻿using ClfApi.Models;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -31,12 +32,12 @@ namespace ClfApi.Services
             string pattern = @"^(?<Client>\S+)\s+" +
                                 @"(?<RfcIdentity>\S+)\s+" +
                                 @"(?<UserId>\S+)\s+" +
-                                @"\[(?<RequestDate>[^\]]+)\]\s+" +
+                                @"\[(?<RequestDate>\S+)\s+" + @"(?<UTC>[^\]]+)\]\s+" +
                                 "\"" + @"(?<Method>[A-Z]+)\s+" +
-                                @"(?<Request>[^" + "\"" + @"]+)?HTTP/[0-9.]+" + "\"" + @"\s+" +
+                                @"(?<Request>\S+)\s+HTTP/" + @"(?<Protocol>[0-9.]+)" + "\"" + @"\s+" +
                                 @"(?<StatusCode>[0-9]{3})\s+" +
                                 @"(?<ResponseSize>[0-9]+|-)" +
-                                @"(\s+" + "\"" + @"(?< Referrer >[^" + "\"]*)\"" + @"\s+" + "\"" + @"(?<UserAgent>[^" + "\"" + "]*)\")?";
+                                @"(\s+" + "\"" + @"(?<Referrer>[^" + "\"]*)\"" + @"\s+" + "\"" + @"(?<UserAgent>[^" + "\"" + "]*)\")?";
 
             Regex reg = new Regex(pattern);
 
@@ -45,41 +46,28 @@ namespace ClfApi.Services
             Clf clf = new Clf
             {
                 Client = match.Groups["Client"].ToString(),
-                RfcIdentity = match.Groups["RfcIdentity"].ToString(),
-                UserId = match.Groups["UserId"].ToString(),
-                RequestDate = DateTime.Parse(match.Groups["RequestDate"].ToString()),
+                RfcIdentity = match.Groups["RfcIdentity"].ToString() != "-" ? match.Groups["RfcIdentity"].ToString() : null,
+                UserId = match.Groups["UserId"].ToString() != "-" ? match.Groups["UserId"].ToString() : null,
+                RequestDate = ClfRequestDate(match.Groups["RequestDate"].ToString(), match.Groups["UTC"].ToString()),
                 Method = match.Groups["Method"].ToString(),
                 Request = match.Groups["Request"].ToString(),
+                Protocol = match.Groups["Protocol"].ToString(),
                 StatusCode = int.Parse(match.Groups["StatusCode"].ToString()),
-                ResponseSize = int.Parse(match.Groups["ResponseSize"].ToString()),
-                Referrer = match.Groups["Referrer"].ToString(),
-                UserAgent = match.Groups["UserAgent"].ToString()
+                ResponseSize = match.Groups["ResponseSize"].ToString() != "-" ? int.Parse(match.Groups["ResponseSize"].ToString()) : 0,
+                Referrer = match.Groups["Referrer"].ToString() != string.Empty ? match.Groups["Referrer"].ToString() : null,
+                UserAgent = match.Groups["UserAgent"].ToString() != string.Empty ? match.Groups["UserAgent"].ToString() : null
             };
 
-            /*
-            string[] values = str.Split(" ");
-
-            string[] propertyIndexes = { "IpAddress", "RfcIdentity", "UserId", "RequestDate", "Request", "StatusCode", "ResponseSize", "Client", "UserAgent" };
-
-            for (int i = 0; i < values.Length; ++i)
-            {
-                if (values[i] != "-")
-                {
-                    PropertyInfo prop = clf.GetType().GetProperty(propertyIndexes[i]);
-                    if (prop.PropertyType == typeof(DateTime))
-                    {
-                        // Removing '[' and ']' from string
-                        string value = values[i].Remove(0, 1).Remove(values[i].Length, 1);
-                        prop.SetValue(clf, DateTime.Parse(value));
-                    }
-                    else
-                    {
-                        prop.SetValue(clf, values[i]);
-                    }
-                }
-            }
-            */
             return clf;
+        }
+
+        public DateTime ClfRequestDate(string requestDate, string utc)
+        {
+            // Inserting ':' to separate UTC => -1000 to -10:00
+            utc = utc.Insert(3, ":");
+            string dateTimeFormat = "dd/MMM/yyyy:HH:mm:ss zzz";
+
+            return DateTime.ParseExact(requestDate + " " + utc, dateTimeFormat, CultureInfo.InvariantCulture);
         }
     }
 
@@ -87,5 +75,6 @@ namespace ClfApi.Services
     {
         IEnumerable<Clf> BatchToList(Stream stream);
         Clf StringToClf(string str);
+        DateTime ClfRequestDate(string requestDate, string utc);
     }
 }
