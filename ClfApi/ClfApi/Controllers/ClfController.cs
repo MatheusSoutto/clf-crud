@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.Authorization;
 using ClfApi.Context;
 using ClfApi.Models;
 using ClfApi.Services;
+using System.IO;
+using System.Text;
 
 namespace ClfApi.Controllers
 {
@@ -17,10 +19,12 @@ namespace ClfApi.Controllers
     public class ClfController : ControllerBase
     {
         private readonly IClfService _clfService;
+        private readonly IUtilService _utilService;
 
-        public ClfController(ClfService clfService)
+        public ClfController(ClfService clfService, UtilService utilService)
         {
             _clfService = clfService;
+            _utilService = utilService;
         }
 
         [HttpGet]
@@ -42,10 +46,10 @@ namespace ClfApi.Controllers
             return clf;
         }
 
-        [HttpGet("by-ip-address/{ipAddress}")]
-        public ActionResult<IEnumerable<Clf>> GetByIpAddress(string ipAddress)
+        [HttpGet("by-client/{client}")]
+        public ActionResult<IEnumerable<Clf>> GetByClient(string client)
         {
-            List<Clf> clfs = _clfService.FindByIpAddress(ipAddress).ToList();
+            List<Clf> clfs = _clfService.FindByClient(client).ToList();
 
             if (clfs == null)
             {
@@ -111,7 +115,32 @@ namespace ClfApi.Controllers
 
             return NoContent();
         }
-        
+
+        [HttpPost("batch")]
+        public ActionResult<IEnumerable<Clf>> PostBatchClf([FromForm] FileUpload fileUpload)
+        {
+            IEnumerable<Clf> result;
+            if (fileUpload.file.Length > 0)
+            {
+                result = _utilService.BatchToList(fileUpload.file.OpenReadStream());
+                /*
+                using (var reader = new StreamReader(fileUpload.file.OpenReadStream()))
+                {
+                    while (reader.Peek() >= 0)
+                    {
+                        result.Add(reader.ReadLine());
+                    }
+                }
+                */
+            }
+            else
+            {
+                return BadRequest("Empty file!");
+            }
+
+            return result.ToList();
+        }
+
         [HttpDelete("{id}")]
         public ActionResult<Clf> DeleteClf(Guid id)
         {
@@ -122,6 +151,11 @@ namespace ClfApi.Controllers
             }
 
             return clf;
+        }
+
+        public class FileUpload
+        {
+            public IFormFile file { get; set; }
         }
     }
 }

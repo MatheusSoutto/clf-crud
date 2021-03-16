@@ -33,6 +33,7 @@ namespace ClfApi
             services.AddDbContext<ClfDbContext>(options => options.UseNpgsql(Configuration.GetConnectionString("ClfDb")));
 
             services.AddScoped<ClfService>();
+            services.AddSingleton<UtilService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

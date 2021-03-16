@@ -31,10 +31,10 @@ namespace ClfApi.Services
             return clf;
         }
 
-        public IEnumerable<Clf> FindByIpAddress(string ipAddress)
+        public IEnumerable<Clf> FindByClient(string client)
         {
             IEnumerable<Clf> clfs = _context.Clfs
-                .Where(clf => clf.IpAddress == ipAddress)
+                .Where(clf => clf.Client == client)
                 .ToList();
 
             return clfs;
@@ -128,7 +128,7 @@ namespace ClfApi.Services
     {
         IEnumerable<Clf> List();
         Clf Find(Guid id);
-        IEnumerable<Clf> FindByIpAddress(string ipAddress);
+        IEnumerable<Clf> FindByClient(string client);
         IEnumerable<Clf> FindByRequestDate(DateTime dateTime);
         IEnumerable<Clf> FindByUserAgent(string userAgent);
         Clf UpdateClf(Clf clf);
