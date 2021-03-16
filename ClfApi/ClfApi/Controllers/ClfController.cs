@@ -4,13 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Authorization;
-using ClfApi.Context;
 using ClfApi.Models;
 using ClfApi.Services;
-using System.IO;
-using System.Text;
 
 namespace ClfApi.Controllers
 {
@@ -120,9 +115,9 @@ namespace ClfApi.Controllers
         public ActionResult<IEnumerable<Clf>> PostBatchClf([FromForm] FileUpload fileUpload)
         {
             IEnumerable<Clf> result;
-            if (fileUpload.file.Length > 0)
+            if (fileUpload.File.Length > 0)
             {
-                result = _utilService.BatchToList(fileUpload.file.OpenReadStream());
+                result = _utilService.BatchToList(fileUpload.File.OpenReadStream());
                 /*
                 using (var reader = new StreamReader(fileUpload.file.OpenReadStream()))
                 {
@@ -155,7 +150,7 @@ namespace ClfApi.Controllers
 
         public class FileUpload
         {
-            public IFormFile file { get; set; }
+            public IFormFile File { get; set; }
         }
     }
 }
