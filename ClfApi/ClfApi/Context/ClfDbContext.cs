@@ -38,11 +38,19 @@ namespace ClfApi.Context
 
                 entity.Property(e => e.Id).ValueGeneratedNever();
 
-                entity.Property(e => e.Client).HasMaxLength(200);
-
-                entity.Property(e => e.IpAddress)
+                entity.Property(e => e.Client)
                     .IsRequired()
                     .HasMaxLength(15);
+
+                entity.Property(e => e.Method)
+                    .IsRequired()
+                    .HasMaxLength(10);
+
+                entity.Property(e => e.Protocol)
+                    .IsRequired()
+                    .HasMaxLength(4);
+
+                entity.Property(e => e.Referrer).HasMaxLength(200);
 
                 entity.Property(e => e.Request)
                     .IsRequired()

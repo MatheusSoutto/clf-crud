@@ -19,6 +19,7 @@ namespace ClfApi.Models
         public DateTime RequestDate { get; set; }
         public string Method { get; set; }
         public string Request { get; set; }
+        public string Protocol { get; set; }
         public int StatusCode { get; set; }
         public int? ResponseSize { get; set; }
         public string Referrer { get; set; }

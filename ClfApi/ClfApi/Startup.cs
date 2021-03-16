@@ -33,6 +33,7 @@ namespace ClfApi
             services.AddDbContext<ClfDbContext>(options => options.UseNpgsql(Configuration.GetConnectionString("ClfDb")));
 
             services.AddScoped<ClfService>();
+
             services.AddSingleton<UtilService>();
         }
 
