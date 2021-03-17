@@ -25,7 +25,14 @@ namespace ClfApi.Controllers
         [HttpGet]
         public ActionResult<IEnumerable<Clf>> GetClfs()
         {
-            return _clfService.List().ToList();
+            List<Clf> clfs = _clfService.List().ToList();
+
+            if (clfs.Count > 0)
+            {
+                return clfs;
+            }
+
+            return BadRequest("No records found!");
         }
 
         [HttpGet("{id}")]
@@ -35,7 +42,7 @@ namespace ClfApi.Controllers
 
             if (clf == null)
             {
-                return NotFound();
+                return BadRequest("No records found!");
             }
 
             return clf;
@@ -48,7 +55,7 @@ namespace ClfApi.Controllers
 
             if (clfs == null)
             {
-                return NotFound();
+                return BadRequest("No records found!");
             }
 
             return clfs;
@@ -60,7 +67,7 @@ namespace ClfApi.Controllers
 
             if (clfs == null)
             {
-                return NotFound();
+                return BadRequest("No records found!");
             }
 
             return clfs;
@@ -74,7 +81,7 @@ namespace ClfApi.Controllers
 
             if (clfs == null)
             {
-                return NotFound();
+                return BadRequest("No records found!");
             }
 
             return clfs;
@@ -89,15 +96,15 @@ namespace ClfApi.Controllers
         {
             if (id != clf.Id)
             {
-                return BadRequest();
+                return BadRequest("Parameter Id different from Object Id!");
             }
 
             if (_clfService.UpdateClf(clf) == null)
             {
-                return NotFound();
+                return BadRequest("No records found!");
             }
 
-            return NoContent();
+            return StatusCode(200, "Successfully updated Common Log Format record!");
         }
 
         [HttpPost]
@@ -108,7 +115,7 @@ namespace ClfApi.Controllers
                 return BadRequest("Already exists!");
             }
 
-            return NoContent();
+            return StatusCode(200, "Successfully inserted Common Log Format record!");
         }
 
         [HttpPost("batch")]
@@ -125,19 +132,19 @@ namespace ClfApi.Controllers
                 return BadRequest("Empty file!");
             }
 
-            return NoContent();
+            return StatusCode(200, "Successfully inserted Common Log Format batch!");
         }
 
         [HttpDelete("{id}")]
-        public ActionResult<Clf> DeleteClf(Guid id)
+        public ActionResult DeleteClf(Guid id)
         {
             Clf clf = _clfService.DeleteClf(id);
             if (clf == null)
             {
-                return NotFound();
+                return BadRequest("No records found!");
             }
 
-            return clf;
+            return StatusCode(200, "Successfully deleted Common Log Format record!");
         }
 
         public class FileUpload
