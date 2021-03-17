@@ -19,7 +19,9 @@ namespace ClfApi.Services
 
         public IEnumerable<Clf> List()
         {
-            return _context.Clfs.Take(10);
+            return _context.Clfs
+                .OrderByDescending(clf => clf.RequestDate)
+                .Take(10);
         }
 
         public Clf Find(Guid id)
