@@ -12,7 +12,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatNativeDateModule } from '@angular/material/core';
+import { MatMomentDateModule, MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular/material-moment-adapter';
 import { MatTableModule } from '@angular/material/table';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialogModule } from '@angular/material/dialog';
@@ -44,14 +44,16 @@ import { ClfFormDialogComponent } from './shared/clf-form-dialog/clf-form-dialog
     MatSelectModule,
     MatFormFieldModule,
     MatDatepickerModule,
-    MatNativeDateModule,
+    MatMomentDateModule,
     MatTableModule,
     MatCardModule,
     MatDialogModule,
     FormsModule,
     ReactiveFormsModule
   ],
-  providers: [MatDatepickerModule],
+  providers: [MatDatepickerModule,
+    {provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: {useUtc: true}}
+  ],
   bootstrap: [AppComponent],
   entryComponents: [ClfFormDialogComponent]
 })
