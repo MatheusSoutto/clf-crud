@@ -28,6 +28,16 @@ namespace ClfApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(
+                    builder =>
+                    {
+                        builder.WithOrigins("http://127.0.0.1:4200",
+                                            "http://localhost:4200");
+                    });
+            });
+
             services.AddControllers();
 
             services.AddDbContext<ClfDbContext>(options => options.UseNpgsql(Configuration.GetConnectionString("ClfDb")));
@@ -48,6 +58,8 @@ namespace ClfApi
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseCors();
 
             app.UseAuthorization();
 

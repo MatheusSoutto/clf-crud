@@ -60,7 +60,7 @@ namespace ClfApi.Controllers
 
             return clfs;
         }
-        [HttpGet("by-date-time/{dateTime}")]
+        [HttpGet("by-request-date/{dateTime}")]
         public ActionResult<IEnumerable<Clf>> GetByRequestDate(DateTime dateTime)
         {
             List<Clf> clfs = _clfService.FindByRequestDate(dateTime).ToList();
