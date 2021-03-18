@@ -13,17 +13,23 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
+import { MatTableModule } from '@angular/material/table';
+import { MatCardModule } from '@angular/material/card';
+import { MatDialogModule } from '@angular/material/dialog';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { HomeComponent } from './view/home/home.component';
 import { SearchComponent } from './view/home/search/search.component';
 import { TableComponent } from './view/home/table/table.component';
+import { ClfFormDialogComponent } from './shared/clf-form-dialog/clf-form-dialog.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     HomeComponent,
     SearchComponent,
-    TableComponent
+    TableComponent,
+    ClfFormDialogComponent
   ],
   imports: [
     HttpClientModule,
@@ -38,7 +44,12 @@ import { TableComponent } from './view/home/table/table.component';
     MatSelectModule,
     MatFormFieldModule,
     MatDatepickerModule,
-    MatNativeDateModule
+    MatNativeDateModule,
+    MatTableModule,
+    MatCardModule,
+    MatDialogModule,
+    FormsModule,
+    ReactiveFormsModule
   ],
   providers: [MatDatepickerModule],
   bootstrap: [AppComponent]
