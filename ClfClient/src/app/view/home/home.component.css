@@ -3,6 +3,12 @@
   height: 5rem;
 }
 
+.toolbar > button {
+  margin: 0.75rem;
+  padding-left: 2%;
+  padding-right: 2%;
+}
+
 .spacer {
   flex: 1 1 auto;
 }
