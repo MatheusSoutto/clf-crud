@@ -39,4 +39,8 @@ export class ClfService {
     let url = `clf/by-user-agent?userAgent${userAgent}`;
     return this.httpClient.get<Clf[]>(env.apiEndpoint + url);
   }
+
+  public postClf(clf: Clf) : Observable<any> {
+    return this.httpClient.post<Clf>(env.apiEndpoint + 'clf', clf, this.httpOptions);
+  }
 }
