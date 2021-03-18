@@ -18,9 +18,25 @@ export class ClfService {
   constructor(
     private httpClient: HttpClient
   ) { }
+  
+  public getClfs(): Observable<Clf[]> {
+    let url = `clf`;
+    console.log(env.apiEndpoint);
+    return this.httpClient.get<Clf[]>(env.apiEndpoint + url);
+  }
 
-  public getClfByClient(client: string): Observable<Clf> {
+  public getClfsByClient(client: string): Observable<Clf[]> {
     let url = `clf/by-client/${client}`;
-    return this.httpClient.get<Clf>(env.apiEndpoint + url);
+    return this.httpClient.get<Clf[]>(env.apiEndpoint + url);
+  }
+
+  public getClfsByRequestDate(requestDate: Date): Observable<Clf[]> {
+    let url = `clf/by-request-date/${requestDate.toString()}`;
+    return this.httpClient.get<Clf[]>(env.apiEndpoint + url);
+  }
+
+  public getClfsByUserAgent(userAgent: string): Observable<Clf[]> {
+    let url = `clf/by-user-agent?userAgent${userAgent}`;
+    return this.httpClient.get<Clf[]>(env.apiEndpoint + url);
   }
 }
