@@ -1,0 +1,38 @@
+<mat-tab-group mat-align-tabs="start" class="tab-group">
+  <mat-tab label="By Client">
+    <mat-form-field appearance="standard" class="form-field">
+      <mat-label>Search by client</mat-label>
+      <input matInput placeholder="Ip Address">
+      <!-- <mat-hint>Hint</mat-hint> -->
+    </mat-form-field>
+    <button mat-raised-button class="button" color="accent"><mat-icon>search</mat-icon> Search</button>
+  </mat-tab>
+  <mat-tab label="By Request Date">
+    <mat-form-field appearance="standard">
+      <mat-label>Choose a date</mat-label>
+      <input matInput [matDatepicker]="picker">
+      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
+    <mat-form-field appearance="standard" class="form-field">
+      <mat-label>Request time</mat-label>
+      <input matInput type="time" name="time" value="00:00" placeholder="Request Time">
+      <!-- <mat-icon>search</mat-icon> -->
+    </mat-form-field>
+    <mat-form-field appearance="standard" class="form-field">
+      <mat-label>Time Zone</mat-label>
+      <mat-select [(value)]="selectedTimeZone">
+        <mat-option *ngFor="let timeZone of timeZoneList" [value]="timeZone">{{ timeZone }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <button mat-raised-button class="button" color="accent"><mat-icon>search</mat-icon> Search</button>
+  </mat-tab>
+  <mat-tab label="By User Agent">
+    <mat-form-field appearance="standard" class="form-field">
+      <mat-label>Search by user agent</mat-label>
+      <input matInput placeholder="User Agent">
+      <!-- <mat-hint>Hint</mat-hint> -->
+    </mat-form-field>
+    <button mat-raised-button class="button" color="accent"><mat-icon>search</mat-icon> Search</button>
+  </mat-tab>
+</mat-tab-group>
