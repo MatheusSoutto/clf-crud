@@ -52,6 +52,7 @@ import { ClfFormDialogComponent } from './shared/clf-form-dialog/clf-form-dialog
     ReactiveFormsModule
   ],
   providers: [MatDatepickerModule],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  entryComponents: [ClfFormDialogComponent]
 })
 export class AppModule { }

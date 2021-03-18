@@ -1,0 +1,17 @@
+.dialog-form {
+    min-width: 240px;
+    max-width: 800px;
+    width: 100%;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.form-field {
+  margin: 1.25rem;
+}
+
+.user-agent-field {
+  width: 38.75rem;
+}
