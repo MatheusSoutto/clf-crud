@@ -13,6 +13,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Net.Http.Headers;
 
 namespace ClfApi
 {
@@ -25,20 +26,23 @@ namespace ClfApi
 
         public IConfiguration Configuration { get; }
 
+        readonly string MyAllowAllHeadersPolicy = "MyAllowAllHeadersPolicy";
+
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddCors(options =>
             {
-                options.AddDefaultPolicy(
+                options.AddPolicy(name: MyAllowAllHeadersPolicy,
                     builder =>
                     {
                         builder.WithOrigins("http://127.0.0.1:4200",
-                                            "http://localhost:4200");
+                                            "http://localhost:4200")
+                                .AllowAnyHeader();
                     });
             });
 
-            services.AddControllers();
+            services.AddControllers().AddNewtonsoftJson();
 
             services.AddDbContext<ClfDbContext>(options => options.UseNpgsql(Configuration.GetConnectionString("ClfDb")));
 
@@ -59,7 +63,7 @@ namespace ClfApi
 
             app.UseRouting();
 
-            app.UseCors();
+            app.UseCors(MyAllowAllHeadersPolicy);
 
             app.UseAuthorization();
 
