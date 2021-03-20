@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { ClfBatchDialogComponent } from 'src/app/shared/clf-batch-dialog/clf-batch-dialog.component';
 import { ClfFormDialogComponent } from 'src/app/shared/clf-form-dialog/clf-form-dialog.component';
 
 @Component({
@@ -19,6 +20,16 @@ export class HomeComponent implements OnInit {
   addClf(): void {
     const dialogRef = this.dialog.open(ClfFormDialogComponent, {
       minWidth: '400px',
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('The dialog was closed');
+    });
+  }
+
+  batchClf(): void {
+    const dialogRef = this.dialog.open(ClfBatchDialogComponent, {
+      minWidth: '400px'
     });
 
     dialogRef.afterClosed().subscribe(result => {

@@ -1,0 +1,14 @@
+<h1 mat-dialog-title>Upload batch file</h1>
+<div mat-dialog-content>
+  <div class="form-group form-row">
+    <input type="file" (change)="onSelectedFile($event)">
+  </div>
+  <!-- <mat-form-field>
+    <mat-label>Choose file</mat-label>
+    <input type="file" (change)="onSelectedFile($event)">
+  </mat-form-field> -->
+</div>
+<div mat-dialog-actions>
+  <button mat-raised-button color="primary" (click)="onSubmit()">Submit</button>
+  <button mat-raised-button color="warn" (click)="cancel()">Cancel</button>
+</div>

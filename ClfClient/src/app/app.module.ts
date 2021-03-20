@@ -22,6 +22,7 @@ import { HomeComponent } from './view/home/home.component';
 import { SearchComponent } from './view/home/search/search.component';
 import { TableComponent } from './view/home/table/table.component';
 import { ClfFormDialogComponent } from './shared/clf-form-dialog/clf-form-dialog.component';
+import { ClfBatchDialogComponent } from './shared/clf-batch-dialog/clf-batch-dialog.component';
 
 @NgModule({
   declarations: [
@@ -29,7 +30,8 @@ import { ClfFormDialogComponent } from './shared/clf-form-dialog/clf-form-dialog
     HomeComponent,
     SearchComponent,
     TableComponent,
-    ClfFormDialogComponent
+    ClfFormDialogComponent,
+    ClfBatchDialogComponent
   ],
   imports: [
     HttpClientModule,
@@ -55,6 +57,9 @@ import { ClfFormDialogComponent } from './shared/clf-form-dialog/clf-form-dialog
     {provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: {useUtc: true}}
   ],
   bootstrap: [AppComponent],
-  entryComponents: [ClfFormDialogComponent]
+  entryComponents: [
+    ClfFormDialogComponent,
+    ClfBatchDialogComponent
+  ]
 })
 export class AppModule { }

@@ -51,4 +51,8 @@ export class ClfService {
   public deleteClf(id: string) : Observable<any> {
     return this.httpClient.delete(env.apiEndpoint + `clf/${id}`, this.httpOptions);
   }
+
+  public batchClf(formData: FormData) : Observable<any> {
+    return this.httpClient.post(env.apiEndpoint + 'clf/batch', formData);
+  }
 }
