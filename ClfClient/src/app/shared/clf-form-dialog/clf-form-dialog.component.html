@@ -9,12 +9,10 @@
     <mat-form-field appearance="standard" class="form-field">
       <mat-label>RFC Identity</mat-label>
       <input matInput formControlName="rfcIdentity" name="rfcIdentity" placeholder="RFC Identity">
-      <!-- <mat-hint>Hint</mat-hint> -->
     </mat-form-field>
     <mat-form-field appearance="standard" class="form-field">
       <mat-label>User Id</mat-label>
       <input matInput formControlName="userId" name="userId" placeholder="User Id">
-      <!-- <mat-hint>Hint</mat-hint> -->
     </mat-form-field>
     <mat-form-field appearance="standard" class="form-field">
       <mat-label>Choose a date</mat-label>
@@ -24,8 +22,7 @@
     </mat-form-field>
     <mat-form-field appearance="standard" class="form-field">
       <mat-label>Request time</mat-label>
-      <input matInput formControlName="time" type="time" name="time" placeholder="Request Time">
-      <!-- <mat-icon>search</mat-icon> -->
+      <input matInput formControlName="time" type="time" step="1">
     </mat-form-field>
     <mat-form-field appearance="standard" class="form-field">
       <mat-label>Time Zone</mat-label>
@@ -36,43 +33,38 @@
     <mat-form-field appearance="standard" class="form-field">
       <mat-label>Method</mat-label>
       <mat-select formControlName="method" (change)="eventSelection($event.value)">
-        <mat-option *ngFor="let methodItem of methodOptions" [value]="methodItem">{{ timeZoneItem }}</mat-option>
+        <mat-option *ngFor="let methodItem of methodOptions" [value]="methodItem">{{ methodItem }}</mat-option>
       </mat-select>
     </mat-form-field>
     <mat-form-field appearance="standard" class="form-field">
       <mat-label>Request</mat-label>
       <input matInput formControlName="request" name="request" placeholder="Request">
-      <!-- <mat-hint>Hint</mat-hint> -->
     </mat-form-field>
     <mat-form-field appearance="standard" class="form-field">
       <mat-label>Protocol</mat-label>
       <input matInput formControlName="protocol" name="protocol" placeholder="HTTP Protocol">
-      <!-- <mat-hint>Hint</mat-hint> -->
     </mat-form-field>
     <mat-form-field appearance="standard" class="form-field">
       <mat-label>Status Code</mat-label>
       <input matInput formControlName="statusCode" name="statusCode" placeholder="Status Code">
-      <!-- <mat-hint>Hint</mat-hint> -->
     </mat-form-field>
     <mat-form-field appearance="standard" class="form-field">
       <mat-label>Response Size</mat-label>
       <input matInput formControlName="responseSize" name="responseSize" placeholder="Response Size">
-      <!-- <mat-hint>Hint</mat-hint> -->
     </mat-form-field>
     <mat-form-field appearance="standard" class="form-field">
       <mat-label>Referrer</mat-label>
       <input matInput formControlName="referrer" name="referrer" placeholder="Referrer">
-      <!-- <mat-hint>Hint</mat-hint> -->
     </mat-form-field>
     <mat-form-field appearance="standard" class="form-field user-agent-field">
       <mat-label>User Agent</mat-label>
       <input matInput formControlName="userAgent" name="userAgent" placeholder="User Agent">
-      <!-- <mat-hint>Hint</mat-hint> -->
     </mat-form-field>
   </form>
 </div>
 <div mat-dialog-actions>
-  <button mat-raised-button color="primary"> Submit </button>
+  <button mat-raised-button *ngIf="!data" color="primary" (click)="createClf()">Create</button>
+  <button mat-raised-button *ngIf="data" color="primary" (click)="updateClf()">Update</button>
   <button mat-raised-button color="warn" (click)="cancel()">Cancel</button>
   <!-- <button mat-button [mat-dialog-close]="data.animal" cdkFocusInitial>Ok</button> -->
 </div>

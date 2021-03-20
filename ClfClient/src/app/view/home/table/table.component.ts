@@ -2,6 +2,8 @@ import { Component, Input, OnInit } from '@angular/core';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { Clf } from 'src/app/model/clf.model';
 import { ClfService } from 'src/app/service/clf.service';
+import { ClfFormDialogComponent } from 'src/app/shared/clf-form-dialog/clf-form-dialog.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-table',
@@ -24,11 +26,24 @@ export class TableComponent implements OnInit {
                       'statusCode', 'responseSize', 'requestDate', 'referrer', 'actions'];
 
   constructor(
-    public clfService: ClfService
+    public clfService: ClfService,
+    public dialog: MatDialog
   ) { }
 
   ngOnInit() {
     
+  }
+
+  updateClf(clf: Clf): void {
+    console.log(clf);
+    const dialogRef = this.dialog.open(ClfFormDialogComponent, {
+      minWidth: '400px',
+      data: clf
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('The dialog was closed');
+    });
   }
 
 }

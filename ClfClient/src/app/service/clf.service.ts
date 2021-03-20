@@ -30,8 +30,8 @@ export class ClfService {
     return this.httpClient.get<Clf[]>(env.apiEndpoint + url);
   }
 
-  public getClfsByRequestDate(requestDate: Date): Observable<Clf[]> {
-    let url = `clf/by-request-date/${requestDate.toString()}`;
+  public getClfsByRequestDate(requestDate: string): Observable<Clf[]> {
+    let url = `clf/by-request-date/${requestDate}`;
     return this.httpClient.get<Clf[]>(env.apiEndpoint + url);
   }
 
@@ -40,7 +40,11 @@ export class ClfService {
     return this.httpClient.get<Clf[]>(env.apiEndpoint + url);
   }
 
-  public postClf(clf: Clf) : Observable<any> {
-    return this.httpClient.post<Clf>(env.apiEndpoint + 'clf', clf, this.httpOptions);
+  public postClf(clf: object) : Observable<any> {
+    return this.httpClient.post(env.apiEndpoint + 'clf', clf, this.httpOptions);
+  }
+
+  public putClf(id: string, clf: object) : Observable<any> {
+    return this.httpClient.put(env.apiEndpoint + `clf/${id}`, clf, this.httpOptions);
   }
 }
