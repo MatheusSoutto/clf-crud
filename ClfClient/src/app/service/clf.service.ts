@@ -36,7 +36,7 @@ export class ClfService {
   }
 
   public getClfsByUserAgent(userAgent: string): Observable<Clf[]> {
-    let url = `clf/by-user-agent?userAgent${userAgent}`;
+    let url = `clf/by-user-agent?userAgent=${userAgent}`;
     return this.httpClient.get<Clf[]>(env.apiEndpoint + url);
   }
 
