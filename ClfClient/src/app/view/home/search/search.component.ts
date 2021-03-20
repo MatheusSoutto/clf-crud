@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Moment } from 'moment';
-import { Util } from 'src/app/helper/util';
+import * as moment from 'moment';
+import { UtilService } from 'src/app/helper/util';
 import { Clf } from 'src/app/model/clf.model';
 import { ClfService } from 'src/app/service/clf.service';
 
@@ -16,7 +16,7 @@ export class SearchComponent implements OnInit {
   client: string = '';
   userAgent: string;
 
-  requestDate: Moment;
+  requestDate: moment.Moment = moment();
   time: string = '00:00:00';
   timeZone: string = '+00:00';
 
@@ -29,15 +29,16 @@ export class SearchComponent implements OnInit {
 
   constructor(
     private formBuilder: FormBuilder,
-    public clfService: ClfService
+    public clfService: ClfService,
+    private utilService: UtilService
   ) { }
 
   ngOnInit() {
     this.clfForm = this.formBuilder.group({
       client: ['', [Validators.required]],
-      date: ['', [Validators.required]],
-      time: ['', [Validators.required]],
-      timeZone: ['', [Validators.required]],
+      requestDate: [this.requestDate, [Validators.required]],
+      time: [this.time, [Validators.required]],
+      timeZone: [this.timeZone, [Validators.required]],
       userAgent: ['', [Validators.required]]
     });
   }
@@ -51,10 +52,16 @@ export class SearchComponent implements OnInit {
   }
 
   onSubmitRequestDate() {
-    //this.requestDate = Util.setTimeAndTimeZone(this.requestDate, this.time, this.timeZone);
-    let dateString = Util.getDateISOString(this.requestDate, this.time, this.timeZone);
+    this.requestDate = this.utilService.setTimeAndZone(this.clfForm.controls.requestDate.value,
+                                                        this.clfForm.controls.time.value,
+                                                        this.clfForm.controls.timeZone.value);
 
-    this.getClfsByRequestDate(dateString);
+    this.getClfsByRequestDate(this.requestDate.creationData().input.toString());
+  }
+
+  onSubmitUserAgent() {
+    debugger;
+    this.getClfsByUserAgent(this.clfForm.controls.userAgent.value.toString());
   }
 
   getClfs() {

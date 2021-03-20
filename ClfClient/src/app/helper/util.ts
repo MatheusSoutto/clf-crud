@@ -1,38 +1,65 @@
+import { Injectable } from '@angular/core';
+import { FormGroup } from '@angular/forms';
 import * as moment from 'moment';
 import { Clf } from '../model/clf.model';
 
-export const Util = {
-  getDateISOString(mom: moment.Moment, time: string, timeZone: string): string {
-    console.log(mom.toString());
-    console.log(time);
-    console.log(timeZone);
-    mom.set({
-      hours: Number(time.substr(0, 2)),
-      minutes: Number(time.substr(3, 2)),
-      seconds: Number(time.substr(6, 2))
-    });
-    mom.utcOffset(timeZone);
+@Injectable({
+  providedIn: 'root'
+})
+export class UtilService {
+  setTimeAndZone(requestDate: moment.Moment, time: string, zone: string): moment.Moment {
+    requestDate = moment(requestDate);
 
-    console.log(mom);
-    console.log(mom.format());
-    // let date = new Date(mom.toISOString());
-    // date.setHours(Number(time.substr(0, 2)));
-    // date.setMinutes(Number(time.substr(3, 2)));
-    // date.setSeconds(Number(time.substr(6, 2)));
-    // console.log(date);
+    console.log(requestDate);
+    requestDate.set({
+      hour: Number(time.substr(0, 2)),
+      minute: Number(time.substr(3, 2)),
+      second: Number(time.substr(6, 2))
+    })
 
-    // mom.set({
-    //   hour: Number(time.substr(0, 2)),
-    //   minute: Number(time.substr(3, 2)),
-    //   second: Number(time.substr(6, 2))
-    // });
-    // date.minutes(Number(time.substr(3, 2)));
-    // date.seconds(Number(time.substr(6, 2)));
-    //date.utcOffset(timeZone.replace(':', ''));
+    // utcOffset() only sets the UTC flag, not actually change the date
+    requestDate = moment(
+      requestDate.utcOffset(zone, true).format()
+    );
+    console.log(requestDate);
 
+    return requestDate;
+  }
 
-    return mom.format();
-  },
+  getClfFromFormGroup(id: string, clfForm: FormGroup): Clf {
+    let requestDate = this.setTimeAndZone(clfForm.controls.requestDate.value, 
+                                      clfForm.controls.time.value,
+                                      clfForm.controls.timeZone.value);
+    // let requestDate: moment.Moment = moment(clfForm.controls.requestDate.value);
+
+    console.log(requestDate);
+    requestDate.set({
+      hour: Number(clfForm.controls.time.value.substr(0, 2)),
+      minute: Number(clfForm.controls.time.value.substr(3, 2)),
+      second: Number(clfForm.controls.time.value.substr(6, 2))
+    })
+
+    // utcOffset() only sets the UTC flag, not actually change the date
+    requestDate = moment(
+      requestDate.utcOffset(clfForm.controls.timeZone.value, true).format()
+    );
+    console.log(requestDate);
+
+    return {
+      id: id,
+      client: clfForm.controls.client.value,
+      rfcIdentity: clfForm.controls.rfcIdentity.value,
+      userId: clfForm.controls.userId.value,
+      requestDate: requestDate,
+      method: clfForm.controls.method.value,
+      request: clfForm.controls.request.value,
+      protocol: clfForm.controls.protocol.value,
+      statusCode: Number(clfForm.controls.statusCode.value),
+      responseSize: Number(clfForm.controls.responseSize.value),
+      referrer: clfForm.controls.referrer.value,
+      userAgent: clfForm.controls.userAgent.value
+    };
+  }
 
   getJsonFromClf(clf: Clf): object {
     return {

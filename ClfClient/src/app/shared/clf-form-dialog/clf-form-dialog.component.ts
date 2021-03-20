@@ -2,7 +2,7 @@ import { Component, Inject, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import * as moment from 'moment';
-import { Util } from 'src/app/helper/util';
+import { UtilService } from 'src/app/helper/util';
 import { Clf } from 'src/app/model/clf.model';
 import { ClfService } from 'src/app/service/clf.service';
 
@@ -35,6 +35,7 @@ export class ClfFormDialogComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: Clf,
     private formBuilder: FormBuilder,
     private clfService: ClfService,
+    private utilService: UtilService,
     public dialogRef: MatDialogRef<ClfFormDialogComponent>
   ) { }
 
@@ -92,7 +93,7 @@ export class ClfFormDialogComponent implements OnInit {
   createClf(): void {
     this.prepare();
 
-    this.clfService.postClf(Util.getJsonFromClf(this.clf)).subscribe(result => { });
+    this.clfService.postClf(this.utilService.getJsonFromClf(this.clf)).subscribe(result => { });
     this.dialogRef.close();
     this.clfForm.reset();
   }
@@ -100,7 +101,7 @@ export class ClfFormDialogComponent implements OnInit {
   updateClf(): void {
     this.prepare();
 
-    this.clfService.putClf(this.clf.id, Util.getJsonFromClf(this.clf)).subscribe(result => { });
+    this.clfService.putClf(this.clf.id, this.utilService.getJsonFromClf(this.clf)).subscribe(result => { });
     this.dialogRef.close();
     this.clfForm.reset();
   }
