@@ -47,4 +47,8 @@ export class ClfService {
   public putClf(id: string, clf: object) : Observable<any> {
     return this.httpClient.put(env.apiEndpoint + `clf/${id}`, clf, this.httpOptions);
   }
+
+  public deleteClf(id: string) : Observable<any> {
+    return this.httpClient.delete(env.apiEndpoint + `clf/${id}`, this.httpOptions);
+  }
 }

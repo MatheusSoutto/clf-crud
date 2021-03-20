@@ -46,4 +46,9 @@ export class TableComponent implements OnInit {
     });
   }
 
+  deleteClf(id: string): void {
+    this.clfService.deleteClf(id).subscribe(result => { });
+    this.dataSource = null;
+  }
+
 }
