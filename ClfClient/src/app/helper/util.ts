@@ -7,50 +7,26 @@ import { Clf } from '../model/clf.model';
   providedIn: 'root'
 })
 export class UtilService {
-  setTimeAndZone(requestDate: moment.Moment, time: string, zone: string): moment.Moment {
-    requestDate = moment(requestDate);
+  setTimeAndZone(requestDate: string, time: string, zone: string): moment.Moment {
+    // Concat date string, time string and zone(removing ':' from zone)
+    let str = requestDate.substr(0, 11) + time + zone;
+    let requestTime = moment(str).utcOffset(str);
 
-    console.log(requestDate);
-    requestDate.set({
-      hour: Number(time.substr(0, 2)),
-      minute: Number(time.substr(3, 2)),
-      second: Number(time.substr(6, 2))
-    })
-
-    // utcOffset() only sets the UTC flag, not actually change the date
-    requestDate = moment(
-      requestDate.utcOffset(zone, true).format()
-    );
-    console.log(requestDate);
-
-    return requestDate;
+    return requestTime;
   }
 
   getClfFromFormGroup(id: string, clfForm: FormGroup): Clf {
-    let requestDate = this.setTimeAndZone(clfForm.controls.requestDate.value, 
+    let requestTime = this.setTimeAndZone(clfForm.controls.requestTime.value, 
                                       clfForm.controls.time.value,
                                       clfForm.controls.timeZone.value);
-    // let requestDate: moment.Moment = moment(clfForm.controls.requestDate.value);
-
-    console.log(requestDate);
-    requestDate.set({
-      hour: Number(clfForm.controls.time.value.substr(0, 2)),
-      minute: Number(clfForm.controls.time.value.substr(3, 2)),
-      second: Number(clfForm.controls.time.value.substr(6, 2))
-    })
-
-    // utcOffset() only sets the UTC flag, not actually change the date
-    requestDate = moment(
-      requestDate.utcOffset(clfForm.controls.timeZone.value, true).format()
-    );
-    console.log(requestDate);
 
     return {
       id: id,
       client: clfForm.controls.client.value,
       rfcIdentity: clfForm.controls.rfcIdentity.value,
       userId: clfForm.controls.userId.value,
-      requestDate: requestDate,
+      requestDate: requestTime,
+      requestTime: requestTime,
       method: clfForm.controls.method.value,
       request: clfForm.controls.request.value,
       protocol: clfForm.controls.protocol.value,
@@ -67,7 +43,8 @@ export class UtilService {
       client: clf.client,
       rfcIdentity: clf.rfcIdentity,
       userId: clf.userId,
-      requestDate: clf.requestDate.creationData().input,
+      requestDate: clf.requestDate,
+      requestTime: clf.requestTime.creationData().input.toString(),
       method: clf.method,
       request: clf.request,
       protocol: clf.protocol,
