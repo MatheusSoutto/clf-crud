@@ -1,9 +1,19 @@
-# clf-crud
-Common Log Format Apllication (CRUD and Batch Upload)
+# Combined/Common Log Format Apllication (CRUD and Batch Upload)
 
-Projeto full cycle (banco de dados, back end e front end) de CRUD e carregamento em lote via arquivo ".log" (aceita Combined Log Format ou Common Log Format).
+Projeto full cycle (banco de dados, back end e front end) de CRUD e carregamento em lote via arquivo ".log" (aceita Combined Log Format ou Common Log Format). Seguem abaixo, os formatos aceitos.
 
+Common Log Format
+```
+132.10.11.5 - gregory [20/Jan/2019:08:44:13 +0100] "POST http://things.example.com/hydrant HTTP/2.0" 204 1313
+```
 
+Combined Log Format (Common Log Format + 2 campos: 'Referer' e 'User-agent')
+```
+221.123.22.151 user-identifier frank [25/Jun/2019:19:32:10 -0800] "GET http://shame.example.com/bear HTTP/1.0" 200 0 "http://mom.com/cave" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36"
+```
+
+Material de apoio:
+https://httpd.apache.org/docs/1.3/logs.html
 
 
 ## Configuração
@@ -74,7 +84,7 @@ Para que não ocorra erros de conversão do JSON para o modelo, deve-se certific
 Npgsql converte o `DateTimeOffset` pro UTC local (do servidor) quando mapeado a um `timestamptz` (PostgreSQL), antes de enviar ao DB:
 https://www.npgsql.org/doc/types/datetime.html
 
-Por isso, utilizei a abordagem de armazenar o `RequestDate` como `timestamp` (convertendo para UTCDateTime global) e o `RequestTime` como `timetz` (`DateTimeOffset`) para manter o time zone original.
+Por isso, utilizei a abordagem de armazenar o `RequestDate` como `timestamp` (convertendo para UTCDateTime global) e o `RequestTime` como `timetz` (`DateTimeOffset`) para manter a informação do time zone original.
 
 ### Front End (ClfClient)
 
