@@ -23,7 +23,7 @@ export class TableComponent implements OnInit {
   dataSource: Clf[];
 
   columnsToDisplay = ['client', 'rfcIdentity', 'userId', 'method', 'request',
-                      'statusCode', 'responseSize', 'requestDate', 'referrer', 'actions'];
+                      'statusCode', 'responseSize', 'requestTime', 'referrer', 'actions'];
 
   constructor(
     public clfService: ClfService,

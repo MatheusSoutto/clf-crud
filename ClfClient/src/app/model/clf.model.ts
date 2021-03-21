@@ -6,6 +6,7 @@ export class Clf {
   rfcIdentity: string;
   userId: string;
   requestDate: Moment;
+  requestTime: Moment;
   method: string;
   request: string;
   protocol: string;

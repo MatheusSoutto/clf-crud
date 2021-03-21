@@ -16,7 +16,7 @@ export class SearchComponent implements OnInit {
   client: string = '';
   userAgent: string;
 
-  requestDate: moment.Moment = moment();
+  requestTime: moment.Moment = moment();
   time: string = '00:00:00';
   timeZone: string = '+00:00';
 
@@ -36,7 +36,7 @@ export class SearchComponent implements OnInit {
   ngOnInit() {
     this.clfForm = this.formBuilder.group({
       client: ['', [Validators.required]],
-      requestDate: [this.requestDate, [Validators.required]],
+      requestTime: [this.requestTime, [Validators.required]],
       time: [this.time, [Validators.required]],
       timeZone: [this.timeZone, [Validators.required]],
       userAgent: ['', [Validators.required]]
@@ -51,12 +51,12 @@ export class SearchComponent implements OnInit {
     this.getClfsByClient(this.clfForm.controls.client.value);
   }
 
-  onSubmitRequestDate() {
-    this.requestDate = this.utilService.setTimeAndZone(this.clfForm.controls.requestDate.value,
+  onSubmitRequestTime() {
+    this.requestTime = this.utilService.setTimeAndZone(this.clfForm.controls.requestTime.value,
                                                         this.clfForm.controls.time.value,
                                                         this.clfForm.controls.timeZone.value);
 
-    this.getClfsByRequestDate(this.requestDate.creationData().input.toString());
+    this.getClfsByRequestDate(this.requestTime.creationData().input.toString());
   }
 
   onSubmitUserAgent() {

@@ -23,7 +23,7 @@ export class ClfFormDialogComponent implements OnInit {
   methodOptions: string[] = ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS',
     'HEAD', 'CONNECT', 'TRACE'];
 
-  requestDate: moment.Moment = moment();
+  requestTime: moment.Moment;
   time: string;
   timeZone: string = '+00:00';
 
@@ -45,18 +45,17 @@ export class ClfFormDialogComponent implements OnInit {
       this.type = 'update';
 
       this.clf = this.data;
+      
+      this.requestTime = moment(this.data.requestTime.toString()).utcOffset(this.data.requestTime.toString());
 
-      this.requestDate = moment(this.data.requestDate);
-
-      let time = this.requestDate.format('HH:mm:ss');
-      let timeZone = this.requestDate.format('Z');
-      console.log(time);
-      console.log(timeZone);
+      let time = this.requestTime.format('HH:mm:ss');
+      let timeZone = this.requestTime.format('Z');
+      
       this.clfForm = this.formBuilder.group({
         client: [this.data.client, Validators.required],
         rfcIdentity: [this.data.rfcIdentity, Validators.required],
         userId: [this.data.userId, Validators.required],
-        requestDate: [this.data.requestDate, Validators.required],
+        requestTime: [this.requestTime, Validators.required],
         time: [time, Validators.required],
         timeZone: [timeZone, Validators.required],
         method: [this.data.method, Validators.required],
@@ -74,7 +73,7 @@ export class ClfFormDialogComponent implements OnInit {
         client: [null, Validators.required],
         rfcIdentity: [null, Validators.required],
         userId: [null, Validators.required],
-        requestDate: [null, Validators.required],
+        requestTime: [null, Validators.required],
         time: [null, Validators.required],
         timeZone: [null, Validators.required],
         method: [null, Validators.required],
@@ -87,7 +86,6 @@ export class ClfFormDialogComponent implements OnInit {
       });
     }
 
-    console.log(this.data);
   }
 
   createClf(): void {
@@ -107,27 +105,24 @@ export class ClfFormDialogComponent implements OnInit {
   }
 
   prepare(): void {
-    this.requestDate = moment(this.clfForm.controls.requestDate.value);
-    
-    console.log(this.requestDate);
-    this.requestDate.set({
-      hour: Number(this.clfForm.controls.time.value.substr(0, 2)),
-      minute: Number(this.clfForm.controls.time.value.substr(3, 2)),
-      second: Number(this.clfForm.controls.time.value.substr(6, 2))
-    })
-
-    // utcOffset() only sets the UTC flag, not actually change the date
-    this.requestDate = moment(
-      this.requestDate.utcOffset(this.clfForm.controls.timeZone.value, true).format()
-    );
-    console.log(this.requestDate);
+    if (this.type == 'create') {
+      this.requestTime = this.utilService.setTimeAndZone(this.clfForm.controls.requestTime.value.format(),
+                                                          this.clfForm.controls.time.value,
+                                                          this.clfForm.controls.timeZone.value);
+    }
+    else {
+      this.requestTime = this.utilService.setTimeAndZone(this.clfForm.controls.requestTime.value.creationData().input.toString(),
+                                                          this.clfForm.controls.time.value,
+                                                          this.clfForm.controls.timeZone.value);
+    }
 
     this.clf = {
       id: this.clf.id,
       client: this.clfForm.controls.client.value,
       rfcIdentity: this.clfForm.controls.rfcIdentity.value,
       userId: this.clfForm.controls.userId.value,
-      requestDate: this.requestDate,
+      requestDate: this.requestTime.utcOffset(0),
+      requestTime: this.requestTime,
       method: this.clfForm.controls.method.value,
       request: this.clfForm.controls.request.value,
       protocol: this.clfForm.controls.protocol.value,
