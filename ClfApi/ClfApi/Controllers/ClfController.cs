@@ -29,6 +29,7 @@ namespace ClfApi.Controllers
 
             if (clfs.Count > 0)
             {
+                _utilService.ClfSetRequestDateTimeOffset(ref clfs);
                 return clfs;
             }
 
@@ -45,6 +46,8 @@ namespace ClfApi.Controllers
                 return BadRequest("No records found!");
             }
 
+            _utilService.ClfSetRequestDateTimeOffset(ref clf);
+
             return clf;
         }
 
@@ -58,10 +61,12 @@ namespace ClfApi.Controllers
                 return BadRequest("No records found!");
             }
 
+            _utilService.ClfSetRequestDateTimeOffset(ref clfs);
+
             return clfs;
         }
         [HttpGet("by-request-date/{dateTime}")]
-        public ActionResult<IEnumerable<Clf>> GetByRequestDate(DateTime dateTime)
+        public ActionResult<IEnumerable<Clf>> GetByRequestDate(DateTimeOffset dateTime)
         {
             List<Clf> clfs = _clfService.FindByRequestDate(dateTime).ToList();
 
@@ -69,6 +74,8 @@ namespace ClfApi.Controllers
             {
                 return BadRequest("No records found!");
             }
+
+            _utilService.ClfSetRequestDateTimeOffset(ref clfs);
 
             return clfs;
         }
@@ -83,6 +90,8 @@ namespace ClfApi.Controllers
             {
                 return BadRequest("No records found!");
             }
+
+            _utilService.ClfSetRequestDateTimeOffset(ref clfs);
 
             return clfs;
         }
@@ -99,6 +108,11 @@ namespace ClfApi.Controllers
                 return BadRequest("Parameter Id different from Object Id!");
             }
 
+            if (clf.RequestTime != null)
+            {
+                _utilService.ClfSetRequestDate(ref clf);
+            }
+
             if (_clfService.UpdateClf(clf) == null)
             {
                 return BadRequest("No records found!");
@@ -110,6 +124,11 @@ namespace ClfApi.Controllers
         [HttpPost]
         public ActionResult<Clf> PostClf(Clf clf)
         {
+            if (clf.RequestTime != null)
+            {
+                _utilService.ClfSetRequestDate(ref clf);
+            }
+
             if (_clfService.CreateClf(clf) == null)
             {
                 return BadRequest("Already exists!");

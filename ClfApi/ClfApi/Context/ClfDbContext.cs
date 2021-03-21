@@ -56,7 +56,7 @@ namespace ClfApi.Context
                     .IsRequired()
                     .HasMaxLength(200);
 
-                entity.Property(e => e.RequestDate).HasColumnType("timestamp with time zone");
+                entity.Property(e => e.RequestTime).HasColumnType("time with time zone");
 
                 entity.Property(e => e.RfcIdentity).HasMaxLength(50);
 

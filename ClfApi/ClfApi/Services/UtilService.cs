@@ -32,7 +32,7 @@ namespace ClfApi.Services
             string pattern = @"^(?<Client>\S+)\s+" +
                                 @"(?<RfcIdentity>\S+)\s+" +
                                 @"(?<UserId>\S+)\s+" +
-                                @"\[(?<RequestDate>\S+)\s+" + @"(?<UTC>[^\]]+)\]\s+" +
+                                @"\[(?<RequestDateTime>[^\]]+)\]\s+" +
                                 "\"" + @"(?<Method>[A-Z]+)\s+" +
                                 @"(?<Request>\S+)\s+HTTP/" + @"(?<Protocol>[0-9.]+)" + "\"" + @"\s+" +
                                 @"(?<StatusCode>[0-9]{3})\s+" +
@@ -43,12 +43,15 @@ namespace ClfApi.Services
 
             Match match = reg.Match(str);
 
+            DateTimeOffset dateTimeOffset = DateTimeOffsetFromString(match.Groups["RequestDateTime"].ToString());
+
             Clf clf = new Clf
             {
                 Client = match.Groups["Client"].ToString(),
                 RfcIdentity = match.Groups["RfcIdentity"].ToString() != "-" ? match.Groups["RfcIdentity"].ToString() : null,
                 UserId = match.Groups["UserId"].ToString() != "-" ? match.Groups["UserId"].ToString() : null,
-                RequestDate = ClfRequestDate(match.Groups["RequestDate"].ToString(), match.Groups["UTC"].ToString()),
+                RequestDate = dateTimeOffset.UtcDateTime,
+                RequestTime = dateTimeOffset,
                 Method = match.Groups["Method"].ToString(),
                 Request = match.Groups["Request"].ToString(),
                 Protocol = match.Groups["Protocol"].ToString(),
@@ -61,13 +64,33 @@ namespace ClfApi.Services
             return clf;
         }
 
-        public DateTime ClfRequestDate(string requestDate, string utc)
+        public DateTimeOffset DateTimeOffsetFromString(string requestDateTime)
         {
-            // Inserting ':' to separate UTC => -1000 to -10:00
-            utc = utc.Insert(3, ":");
+            // Inserting ':' on Offset => "04/Nov/2020:12:16:04 -1000" to "04/Nov/2020:12:16:04 -10:00"
+            requestDateTime = requestDateTime.Insert(24, ":");
             string dateTimeFormat = "dd/MMM/yyyy:HH:mm:ss zzz";
 
-            return DateTime.ParseExact(requestDate + " " + utc, dateTimeFormat, CultureInfo.InvariantCulture);
+            return DateTimeOffset.ParseExact(requestDateTime, dateTimeFormat, CultureInfo.InvariantCulture);
+        }
+
+        public void ClfSetRequestDateTimeOffset(ref Clf clf)
+        {
+            DateTimeOffset result = new DateTimeOffset(DateTime.SpecifyKind(clf.RequestDate, DateTimeKind.Utc));
+
+            clf.RequestTime = result.ToOffset(new TimeSpan(clf.RequestTime.Offset.Hours, 0, 0));
+        }
+
+        public void ClfSetRequestDateTimeOffset(ref List<Clf> clfs)
+        {
+            clfs.ForEach(clf =>
+            {
+                ClfSetRequestDateTimeOffset(ref clf);
+            });
+        }
+
+        public void ClfSetRequestDate(ref Clf clf)
+        {
+            clf.RequestDate = clf.RequestTime.UtcDateTime;
         }
     }
 
@@ -75,6 +98,9 @@ namespace ClfApi.Services
     {
         IEnumerable<Clf> BatchToList(Stream stream);
         Clf StringToClf(string str);
-        DateTime ClfRequestDate(string requestDate, string utc);
+        DateTimeOffset DateTimeOffsetFromString(string requestTime);
+        void ClfSetRequestDateTimeOffset(ref Clf clf);
+        void ClfSetRequestDateTimeOffset(ref List<Clf> clfs);
+        void ClfSetRequestDate(ref Clf clf);
     }
 }

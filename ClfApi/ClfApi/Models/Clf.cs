@@ -17,6 +17,7 @@ namespace ClfApi.Models
         public string RfcIdentity { get; set; }
         public string UserId { get; set; }
         public DateTime RequestDate { get; set; }
+        public DateTimeOffset RequestTime { get; set; }
         public string Method { get; set; }
         public string Request { get; set; }
         public string Protocol { get; set; }

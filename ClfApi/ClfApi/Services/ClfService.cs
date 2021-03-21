@@ -3,6 +3,7 @@ using ClfApi.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -21,6 +22,7 @@ namespace ClfApi.Services
         {
             return _context.Clfs
                 .OrderByDescending(clf => clf.RequestDate)
+                .OrderByDescending(clf => clf.RequestTime)
                 .Take(10);
         }
 
@@ -42,10 +44,10 @@ namespace ClfApi.Services
             return clfs;
         }
 
-        public IEnumerable<Clf> FindByRequestDate(DateTime dateTime)
+        public IEnumerable<Clf> FindByRequestDate(DateTimeOffset requestDateTime)
         {
             IEnumerable<Clf> clfs = _context.Clfs
-                .Where(clf => clf.RequestDate == dateTime)
+                .Where(clf => clf.RequestDate == requestDateTime.UtcDateTime)
                 .ToList();
 
             return clfs;
@@ -145,7 +147,7 @@ namespace ClfApi.Services
         IEnumerable<Clf> List();
         Clf Find(Guid id);
         IEnumerable<Clf> FindByClient(string client);
-        IEnumerable<Clf> FindByRequestDate(DateTime dateTime);
+        IEnumerable<Clf> FindByRequestDate(DateTimeOffset requestDateTime);
         IEnumerable<Clf> FindByUserAgent(string userAgent);
         Clf UpdateClf(Clf clf);
         Clf CreateClf(Clf clf);
