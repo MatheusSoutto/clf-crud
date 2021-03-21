@@ -35,7 +35,6 @@ export class TableComponent implements OnInit {
   }
 
   updateClf(clf: Clf): void {
-    console.log(clf);
     const dialogRef = this.dialog.open(ClfFormDialogComponent, {
       minWidth: '400px',
       data: clf

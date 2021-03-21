@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDialogRef } from '@angular/material/dialog';
 import { ClfService } from 'src/app/service/clf.service';
 
 @Component({
@@ -27,7 +27,6 @@ export class ClfBatchDialogComponent implements OnInit {
   }
 
   onSubmit() {
-    console.log(this.formData);
     this.clfService.batchClf(this.formData).subscribe(result => { });
   }
 
